@@ -1,0 +1,21 @@
+
+Установить git 
+
+Запустить 				git init
+Настроить пользователя 			git config --local user.name Ihor
+					git config --local user.email Igor.tt6@gmail.com
+Просить статус репозитория		git status
+Добавить файлы в git			git add -A
+Создание комита				git commit -a -m"first commit"
+Проверка истории комиков		git log
+
+GitHub ---------------------------------
+Создать ветку в гитХаб
+Запушить по инструкции
+
+git push -u origin main | -u все пуши будут сюда
+			| origin название репозитория
+			| main название ветки
+________________________________________
+
+обновление данных с гитХаб		git pull
