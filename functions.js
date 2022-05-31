@@ -29,8 +29,11 @@ function getMathResult(num1, num2) {
             }
         }
     // return console.log(str);
+    str.toUpperCase()
     return str;
 
     }
 };
 getMathResult (5,4);
+
+
