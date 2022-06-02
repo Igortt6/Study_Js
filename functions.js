@@ -88,10 +88,21 @@ getTimeFromMinutes(500);
 //                                                                      Принимает 4 числа и выдает наибольшее. с проверкой
 
 function findMaxNumber(num1,num2,num3,num4) {
-    if ((num1 && num2 && num3 && num4) > 0 || !Number.isInteger(num1 && num2 && num3 && num4)) {
-        return console.log(0)
+    if (typeof(num1 && num2 && num3 && num4) !== 'number') {
+        return console.log(0);
     } else {
-        return console.log(Math.max(num1,num2,num3,num4))
+        return console.log(Math.max(num1,num2,num3,num4));
     }
 }
-findMaxNumber(3,1,2,1);
+findMaxNumber(3,1,1,4.5);
+
+//                                                                      Задача с числами фибоначи. Длинна равна аргументу 
+function fib(fibNum) {
+    if (!Number.isInteger(fibNum) || fibNum < 0) {
+        return console.log(" ! ")
+    } else {
+        return console.log(" Go ")
+    }
+    
+}
+fib (3);
