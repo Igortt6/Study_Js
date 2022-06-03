@@ -97,12 +97,28 @@ function findMaxNumber(num1,num2,num3,num4) {
 findMaxNumber(3,1,1,4.5);
 
 //                                                                      Задача с числами фибоначи. Длинна равна аргументу 
-function fib(fibNum) {
-    if (!Number.isInteger(fibNum) || fibNum < 0) {
-        return console.log(" ! ")
-    } else {
-        return console.log(" Go ")
+function fib(num) {
+    if (typeof(num) !== 'number' || num <= 0 || !Number.isInteger(num)) {
+        return "";
     }
-    
+
+    let result = '';
+    let first = 0;
+    let second = 1;
+
+    for (let i = 0; i < num; i++) {
+        if (i + 1 === num) {
+            result += `${first}`;
+            // Без пробела в конце
+        } else {
+            result += `${first} `;
+        }
+
+        let third = first + second;
+        first = second;
+        second = third;
+    }
+    return result;
 }
-fib (3);
+
+fib(5)
