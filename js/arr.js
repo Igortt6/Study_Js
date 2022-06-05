@@ -12,3 +12,52 @@ arr.forEach(function(item, i, arr){
 for (let value of arr) {
     console.log(`${value}: внутри массива ${arr}`);
 }
+
+
+const str = prompt ('', '');
+const products = str.split('', ''); // Формирует массив из сток используя разделитель 
+products.join('; ')  // Формирует строку из массива используя разделитель 
+console.log(products);
+
+// правильная сортировка массива, функция сорт
+arr.sort(compareNum);
+function compareNum (a,b,) {
+    return a - b;
+}
+console.log(arr);
+
+////////////////////////////////////////////////////////////////////////////////////////// Упражнения 2.35 -11 arr
+
+const family = ['Peter', 'Ann', 'Alex', 'Linda'];
+
+function showFamily(arr) {
+    let str = '';
+    if (arr.length === 0 ) {
+        str = 'Семья пуста';
+    } else {
+        str = 'Семья состоит из: ';
+       arr.forEach(eachMember => {
+           str += `${eachMember} `;
+       });
+    };
+
+// //  короткая запись if (?:)
+    // arr.length === 0 ? str = 'Семья пустая' :  str = 'Семья состоит из: '
+    // arr.forEach(eachMember => {
+    //     str += `${eachMember} `
+    // })
+
+    console.log(str);
+}
+showFamily(family);
+
+// Возвращает массив в виде строк в столюец в нижнеи регистре
+const favoriteCities = ['liSBon', 'ROME', 'miLan', 'Dublin'];
+
+function standardizeStrings(arr) {
+    arr.forEach(cityName => {
+        cityName.toLowerCase(`${cityName}\n`);
+        console.log(cityName.toLowerCase());
+    });
+}
+standardizeStrings(favoriteCities);
