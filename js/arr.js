@@ -61,3 +61,21 @@ function standardizeStrings(arr) {
     });
 }
 standardizeStrings(favoriteCities);
+
+////////////////////////////////////////////////////////////////////////////////////////// Упражнения 2.35 -12 arr
+// переворачивает строку наоборот. С проверкой;
+const someString = 'This is some strange string';
+function reverse(str) {
+    for (let i = 0; i <= str.length; i++)
+    console.log (i)
+}
+reverse(someString);
+
+
+
+const baseCurrencies = ['USD', 'EUR'];
+const additionalCurrencies = ['UAH', 'RUB', 'CNY'];
+
+function availableCurr(arr, missingCurr) {
+
+}
