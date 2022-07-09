@@ -91,7 +91,10 @@
   !*** ./src/js/main.js ***!
   \************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 window.addEventListener('DOMContentLoaded', () => {
   // TABS
@@ -207,12 +210,16 @@ window.addEventListener('DOMContentLoaded', () => {
   const modalTrigger = document.querySelectorAll('[data-modal]'),
         modal = document.querySelector('.modal'),
         modalCloseBtn = document.querySelector('[data-close]');
+
+  function openModal() {
+    modal.classList.add('show');
+    modal.classList.remove('hide');
+    document.body.style.overflow = 'hidden';
+    clearInterval(modalTimerId); // не вызывать модал если уже открывалось вручную
+  }
+
   modalTrigger.forEach(btn => {
-    btn.addEventListener('click', () => {
-      modal.classList.add('show');
-      modal.classList.remove('hide');
-      document.body.style.overflow = 'hidden';
-    });
+    btn.addEventListener('click', openModal);
   });
 
   function closeModal() {
@@ -234,6 +241,16 @@ window.addEventListener('DOMContentLoaded', () => {
       closeModal();
     }
   });
+  const modalTimerId = setTimeout(openModal, 5000); // открывать модал через N секунд
+
+  function showModalByScroll() {
+    if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {
+      openModal();
+      window.removeEventListener('scroll', showModalByScroll); // удаляем вызов модалки в низу страници после 1 раза
+    }
+  }
+
+  window.addEventListener('scroll', showModalByScroll); // вызываем модалку при прокрутве в низ стриници
 });
 
 /***/ })
