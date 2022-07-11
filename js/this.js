@@ -70,3 +70,4 @@ function count (num) {
 const double = count.bind(2);
 console.log(double(3)) // 6
 console.log(double(13)) // 26
+
