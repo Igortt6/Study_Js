@@ -109,14 +109,13 @@ window.addEventListener('DOMContentLoaded', () =>{
     }
     setClock('.timer', deadline);
 
-        // MODAL
-    // 1 функция открытия окна 
-    // 2 функция закрытия окна
-    // 3 обработчик собыитий на кнопки
+// MODAL
+// 1 функция открытия окна 
+// 2 функция закрытия окна
+// 3 обработчик собыитий на кнопки
 
     const modalTrigger = document.querySelectorAll('[data-modal]'),
-          modal = document.querySelector('.modal'),
-          modalCloseBtn = document.querySelector('[data-close]');
+          modal = document.querySelector('.modal');
 
     function openModal() {
         modal.classList.add('show');
@@ -134,11 +133,10 @@ window.addEventListener('DOMContentLoaded', () =>{
         modal.classList.remove('show');
         document.body.style.overflow = ''
     }
-    modalCloseBtn.addEventListener('click', closeModal);
 
     // закрытие модалки при клике на подложку
     modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
+        if (e.target === modal || e.target.getAttribute('data-close' == '')) {
             closeModal();
         }
     })
@@ -150,7 +148,7 @@ window.addEventListener('DOMContentLoaded', () =>{
         }
     });
 
-    // const modalTimerId = setTimeout(openModal, 5000); // открывать модал через N секунд
+    const modalTimerId = setTimeout(openModal, 5000); // открывать модал через N секунд
 
     function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight -1) {
@@ -164,12 +162,13 @@ window.addEventListener('DOMContentLoaded', () =>{
 
     // Используем классы для карточек
     class MenuCard {
-        constructor (src, alt, title, descr, price, parentSelector) {
+        constructor (src, alt, title, descr, price, parentSelector, ...classes) {
             this.src = src;
             this.alt = alt;
             this.title = title;
             this.descr = descr;
             this.price = price;
+            this.classes = classes;
             this.parent = document.querySelector(parentSelector); // куда будем пушить объект
             this.transfer = 35; // курст вальют 
             this.changeToUAH();
@@ -178,11 +177,16 @@ window.addEventListener('DOMContentLoaded', () =>{
         changeToUAH() {
             this.price = this.price * this.transfer;
         }
-        
+
         render() {
             const element = document.createElement('div');
+            if (this.classes.length === 0) {
+                this.class = 'menu__item'
+                element.classList.add(this.class);
+            } else {
+                this.classes.forEach(className => element.classList.add(className));
+            }
             element.innerHTML = `
-                <div class="menu__item">
                     <img src=${this.src} alt=${this.alt}>
                     <h3 class="menu__item-subtitle">${this.title}</h3>
                     <div class="menu__item-descr">${this.descr}</div>
@@ -204,6 +208,118 @@ window.addEventListener('DOMContentLoaded', () =>{
         'Меню "Фитнес"',
         'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
         9,
-        '.menu .container'
+        '.menu .container',
     ).render();
+    new MenuCard(
+        'img/tabs/elite.jpg',
+        'elite',
+        'Меню “Премиум”',
+        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+        14,
+        '.menu .container',
+        'menu__item'
+    ).render();
+    new MenuCard(
+        'img/tabs/post.jpg',
+        'post',
+        'Меню "Постное"',
+        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
+        21,
+        '.menu .container',
+        'menu__item'
+    ).render();
+
+// FORMS (с форматом FormData и json)
+// 1 Выделяем формы 
+// 2 Создаем обарботчик событий, при отправке формы. Отменяем поведения браузера.
+// 3 Создаем API -  XMLHttpRequest
+// 4 Создаем обарботчик событий, при загрузе формы. Создаем варинты сообщений, выводим новый .div. Очищаем форму, убираем сообщение.  
+
+    const forms = document.querySelectorAll('form');
+
+    const message = {
+        loading: 'img/spinner.svg',
+        success: 'Спасибо! Скоро мы с вами свяжемся',
+        failure: 'Что-то пошло не так...',
+
+    }
+
+    forms.forEach(item => { // назначаем функцию postData на все формы странички. 
+        postData(item);
+    })
+
+    function postData(form) {
+        form.addEventListener('submit', (e) => {  //    'submit' - событие отправки формы
+            e.preventDefault(); //                      отмена поведения браузера
+
+            const statusMassage = document.createElement('div') // Новый елемент с выводом сообщения о статусе загрузки 
+            statusMassage.src = message.loading;
+            statusMassage.style.cssText = `
+                display: block;
+                margin: 0 auto;
+            `;
+            // form.append(statusMassage); // Метод Element.append() вставляет узлы или строки с текстом в конец Element.
+            form.insertAdjacentElement('afterend', statusMassage) // добавляет переданный элемент в DOM-дерево относительно элемента, вызвавшего метод.
+
+            const request = new XMLHttpRequest();
+            request.open('POST', 'server.php');
+
+            request.setRequestHeader('Contante-type', 'application/json'); // заголовки
+            const formData = new FormData(form); // передача данных из HTML формы в FormData объект
+            const object = {};
+            formData.forEach(function(value,key){
+                object[key] = value;
+            })
+
+            const json = JSON.stringify(object);
+            request.send(json); // Отправляем данные на сервер 
+
+            // request.send(formData); // Отправляем данные на сервер 
+
+            request.addEventListener('load', () => { // отслеживаем загрузку формы
+                if (request.status === 200) { // 200 OK («хорошо») (Список кодов состояния HTTP)
+                    console.log(request.response);
+                    showThanksModal(message.success);
+                    statusMassage.textContent = message.success;
+                    form.reset(); // сбрасываем форму после отправки.
+                       statusMassage.remove() 
+                } else {
+                    showThanksModal(message.failure);
+                }
+            })
+
+        })
+    }
+
+    // ОПОВЕЩЕНИЕ ПОЛЬЗОВАТЕЛЯ СО СПИНЕРОМ
+    // 1) Скрываем старые инпуты в форме
+    // 1) Создаем новый блок благодарности и пушим на страницу
+    // 1) возвращаем форму в изначальный вид
+    // 1) назначаем картинку вместо текста, задаем инлайн стили, помещаем куда нужно 3
+    
+    function showThanksModal(massage) {
+        const prevModalDialog = document.querySelector('.modal__dialog')
+
+        prevModalDialog.classList.add('hide');
+        openModal();
+
+        const  thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+        thanksModal.innerHTML = `
+        <div class="modal__content">
+            <div class="modal__close" data-close>×</div>
+            <div class="modal__title">${massage}</div>
+        </div>
+        `;
+
+        document.querySelector('.modal').append(thanksModal);
+
+        // возвращаем форму в изначальный вид
+        setTimeout(() => {
+            thanksModal.remove()
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            closeModal();
+        }, 4000);
+    }
 });
