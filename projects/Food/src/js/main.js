@@ -39,7 +39,7 @@ window.addEventListener('DOMContentLoaded', () =>{
             })
         }
     })
-
+// _____________________________________________________________________________________________________________________________
 // TIMER
 // 1 установить дату 
 // 2 опеределить разницу между дедлайном
@@ -108,7 +108,7 @@ window.addEventListener('DOMContentLoaded', () =>{
         }
     }
     setClock('.timer', deadline);
-
+// _____________________________________________________________________________________________________________________________
 // MODAL
 // 1 функция открытия окна 
 // 2 функция закрытия окна
@@ -228,12 +228,11 @@ window.addEventListener('DOMContentLoaded', () =>{
         '.menu .container',
         'menu__item'
     ).render();
-
+// _____________________________________________________________________________________________________________________________
 // FORMS (с форматом FormData и json)
-// 1 Выделяем формы 
-// 2 Создаем обарботчик событий, при отправке формы. Отменяем поведения браузера.
-// 3 Создаем API -  XMLHttpRequest
-// 4 Создаем обарботчик событий, при загрузе формы. Создаем варинты сообщений, выводим новый .div. Очищаем форму, убираем сообщение.  
+// 1) создаем блок с сообщениями с ошибками
+// 2) собираем все данные с форм в formData
+// 3) отправляем данные с помощью fetch
 
     const forms = document.querySelectorAll('form');
 
@@ -258,39 +257,103 @@ window.addEventListener('DOMContentLoaded', () =>{
                 display: block;
                 margin: 0 auto;
             `;
+
             // form.append(statusMassage); // Метод Element.append() вставляет узлы или строки с текстом в конец Element.
             form.insertAdjacentElement('afterend', statusMassage) // добавляет переданный элемент в DOM-дерево относительно элемента, вызвавшего метод.
 
-            const request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
-
-            request.setRequestHeader('Contante-type', 'application/json'); // заголовки
             const formData = new FormData(form); // передача данных из HTML формы в FormData объект
+
             const object = {};
-            formData.forEach(function(value,key){
+            formData.forEach(function(value,key) {
                 object[key] = value;
             })
 
-            const json = JSON.stringify(object);
-            request.send(json); // Отправляем данные на сервер 
-
-            // request.send(formData); // Отправляем данные на сервер 
-
-            request.addEventListener('load', () => { // отслеживаем загрузку формы
-                if (request.status === 200) { // 200 OK («хорошо») (Список кодов состояния HTTP)
-                    console.log(request.response);
-                    showThanksModal(message.success);
-                    statusMassage.textContent = message.success;
-                    form.reset(); // сбрасываем форму после отправки.
-                       statusMassage.remove() 
-                } else {
-                    showThanksModal(message.failure);
-                }
+            fetch('server.php', {
+                metod: "POST",
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                // body: formData // для Форм дата 
+                body: JSON.stringify(object) // для JSON
             })
-
+            .then(data => data.text())
+            .then(data =>{
+                console.log(data);
+                showThanksModal(message.success);
+                statusMassage.textContent = message.success;
+                statusMassage.remove();
+            })
+            .catch(() => {
+                showThanksModal(message.failure);
+            })
+            .finally(() => {
+                form.reset();
+            })
         })
     }
 
+// // 1 Выделяем формы 
+// // 2 Создаем обарботчик событий, при отправке формы. Отменяем поведения браузера.
+// // 3 Создаем API -  XMLHttpRequest
+// // 4 Создаем обарботчик событий, при загрузе формы. Создаем варинты сообщений, выводим новый .div. Очищаем форму, убираем сообщение.  
+
+//     const forms = document.querySelectorAll('form');
+
+//     const message = {
+//         loading: 'img/spinner.svg',
+//         success: 'Спасибо! Скоро мы с вами свяжемся',
+//         failure: 'Что-то пошло не так...',
+
+//     }
+
+//     forms.forEach(item => { // назначаем функцию postData на все формы странички. 
+//         postData(item);
+//     })
+
+//     function postData(form) {
+//         form.addEventListener('submit', (e) => {  //    'submit' - событие отправки формы
+//             e.preventDefault(); //                      отмена поведения браузера
+
+//             const statusMassage = document.createElement('div') // Новый елемент с выводом сообщения о статусе загрузки 
+//             statusMassage.src = message.loading;
+//             statusMassage.style.cssText = `
+//                 display: block;
+//                 margin: 0 auto;
+//             `;
+//             // form.append(statusMassage); // Метод Element.append() вставляет узлы или строки с текстом в конец Element.
+//             form.insertAdjacentElement('afterend', statusMassage) // добавляет переданный элемент в DOM-дерево относительно элемента, вызвавшего метод.
+
+//             const request = new XMLHttpRequest();
+//             request.open('POST', 'server.php');
+
+//             request.setRequestHeader('Contante-type', 'application/json'); // заголовки
+//             const formData = new FormData(form); // передача данных из HTML формы в FormData объект
+
+//             const object = {};
+//             formData.forEach(function(value,key) {
+//                 object[key] = value;
+//             })
+
+//             const json = JSON.stringify(object);
+//             request.send(json); // Отправляем данные на сервер 
+
+//             // request.send(formData); // Отправляем данные на сервер 
+
+//             request.addEventListener('load', () => { // отслеживаем загрузку формы
+//                 if (request.status === 200) { // 200 OK («хорошо») (Список кодов состояния HTTP)
+//                     console.log(request.response);
+//                     showThanksModal(message.success);
+//                     statusMassage.textContent = message.success;
+//                     form.reset(); // сбрасываем форму после отправки.
+//                        statusMassage.remove() 
+//                 } else {
+//                     showThanksModal(message.failure);
+//                 }
+//             })
+
+//         })
+//     }
+// _____________________________________________________________________________________________________________________________
     // ОПОВЕЩЕНИЕ ПОЛЬЗОВАТЕЛЯ СО СПИНЕРОМ
     // 1) Скрываем старые инпуты в форме
     // 1) Создаем новый блок благодарности и пушим на страницу
