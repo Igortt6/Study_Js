@@ -62,18 +62,24 @@ const getPositiveIncomeAmount = (data) => {
     let data2 = data.filter(data => data.amount >= 0 )
     return data2
 };
-
+// Вариант через обычную функи: 
+// const getTotalIncomeAmount = (data) => {
+//     if (data.some(element => element.amount < 0)) {
+//         return  data.reduce(function(accumulator, currentValue){
+//             return accumulator + currentValue.amount
+//         },0)
+//     } else {
+//         getPositiveIncomeAmount(funds);
+//     }
+// };
 const getTotalIncomeAmount = (data) => {
     if (data.some(element => element.amount < 0)) {
-        return  data.reduce(function (accumulator, currentValue) {accumulator + currentValue.amount},0)
+        return data.reduce((accumulator, currentValue) => accumulator + currentValue.amount,0)
     } else {
         getPositiveIncomeAmount(funds);
     }
 };
 console.log(getTotalIncomeAmount(funds));
 
-var initialValue = 0;
-var sum = [{x: 1}, {x:2}, {x:3}].reduce(function (accumulator, currentValue) {
-    return accumulator + currentValue.x;}, initialValue)
-console.log(sum);
-// sum == 6
+
+

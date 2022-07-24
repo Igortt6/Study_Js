@@ -136,7 +136,8 @@ window.addEventListener('DOMContentLoaded', () => {
         }
       });
     }
-  }); // TIMER
+  }); // _____________________________________________________________________________________________________________________________
+  // TIMER
   // 1 установить дату 
   // 2 опеределить разницу между дедлайном
   // 3 обновление таймера каждую минуту 
@@ -202,7 +203,8 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  setClock('.timer', deadline); // MODAL
+  setClock('.timer', deadline); // _____________________________________________________________________________________________________________________________
+  // MODAL
   // 1 функция открытия окна 
   // 2 функция закрытия окна
   // 3 обработчик собыитий на кнопки
@@ -299,11 +301,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
   new MenuCard('img/tabs/vegy.jpg', 'vegy', 'Меню "Фитнес"', 'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!', 9, '.menu .container').render();
   new MenuCard('img/tabs/elite.jpg', 'elite', 'Меню “Премиум”', 'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!', 14, '.menu .container', 'menu__item').render();
-  new MenuCard('img/tabs/post.jpg', 'post', 'Меню "Постное"', 'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.', 21, '.menu .container', 'menu__item').render(); // FORMS (с форматом FormData и json)
-  // 1 Выделяем формы 
-  // 2 Создаем обарботчик событий, при отправке формы. Отменяем поведения браузера.
-  // 3 Создаем API -  XMLHttpRequest
-  // 4 Создаем обарботчик событий, при загрузе формы. Создаем варинты сообщений, выводим новый .div. Очищаем форму, убираем сообщение.  
+  new MenuCard('img/tabs/post.jpg', 'post', 'Меню "Постное"', 'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.', 21, '.menu .container', 'menu__item').render(); // _____________________________________________________________________________________________________________________________
+  // FORMS (с форматом FormData и json)
+  // 1) создаем блок с сообщениями с ошибками
+  // 2) собираем все данные с форм в formData
+  // 3) отправляем данные с помощью fetch
 
   const forms = document.querySelectorAll('form');
   const message = {
@@ -323,13 +325,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
       const statusMassage = document.createElement('div'); // Новый елемент с выводом сообщения о статусе загрузки 
 
-      statusMassage.classList.add('status');
-      statusMassage.textContent = message.loading;
-      form.append(statusMassage); // Метод Element.append() вставляет узлы или строки с текстом в конец Element.
+      statusMassage.src = message.loading;
+      statusMassage.style.cssText = `
+                display: block;
+                margin: 0 auto;
+            `; // form.append(statusMassage); // Метод Element.append() вставляет узлы или строки с текстом в конец Element.
 
-      const request = new XMLHttpRequest();
-      request.open('POST', 'server.php');
-      request.setRequestHeader('Contante-type', 'application/json'); // заголовки
+      form.insertAdjacentElement('afterend', statusMassage); // добавляет переданный элемент в DOM-дерево относительно элемента, вызвавшего метод.
 
       const formData = new FormData(form); // передача данных из HTML формы в FormData объект
 
@@ -337,30 +339,79 @@ window.addEventListener('DOMContentLoaded', () => {
       formData.forEach(function (value, key) {
         object[key] = value;
       });
-      const json = JSON.stringify(object);
-      request.send(json); // Отправляем данные на сервер 
-      // request.send(formData); // Отправляем данные на сервер 
+      fetch('server.php', {
+        metod: "POST",
+        headers: {
+          'Content-type': 'application/json'
+        },
+        // body: formData // для Форм дата 
+        body: JSON.stringify(object) // для JSON
 
-      request.addEventListener('load', () => {
-        // отслеживаем загрузку формы
-        if (request.status === 200) {
-          // 200 OK («хорошо») (Список кодов состояния HTTP)
-          console.log(request.response);
-          showThanksModal(message.success);
-          statusMassage.textContent = message.success;
-          form.reset(); // сбрасываем форму после отправки.
-
-          statusMassage.remove();
-        } else {
-          showThanksModal(message.failure);
-        }
+      }).then(data => data.text()).then(data => {
+        console.log(data);
+        showThanksModal(message.success);
+        statusMassage.textContent = message.success;
+        statusMassage.remove();
+      }).catch(() => {
+        showThanksModal(message.failure);
+      }).finally(() => {
+        form.reset();
       });
     });
-  } // ОПОВЕЩЕНИЕ ПОЛЬЗОВАТЕЛЯ СО СПИНЕРОМ
+  } // // 1 Выделяем формы 
+  // // 2 Создаем обарботчик событий, при отправке формы. Отменяем поведения браузера.
+  // // 3 Создаем API -  XMLHttpRequest
+  // // 4 Создаем обарботчик событий, при загрузе формы. Создаем варинты сообщений, выводим новый .div. Очищаем форму, убираем сообщение.  
+  //     const forms = document.querySelectorAll('form');
+  //     const message = {
+  //         loading: 'img/spinner.svg',
+  //         success: 'Спасибо! Скоро мы с вами свяжемся',
+  //         failure: 'Что-то пошло не так...',
+  //     }
+  //     forms.forEach(item => { // назначаем функцию postData на все формы странички. 
+  //         postData(item);
+  //     })
+  //     function postData(form) {
+  //         form.addEventListener('submit', (e) => {  //    'submit' - событие отправки формы
+  //             e.preventDefault(); //                      отмена поведения браузера
+  //             const statusMassage = document.createElement('div') // Новый елемент с выводом сообщения о статусе загрузки 
+  //             statusMassage.src = message.loading;
+  //             statusMassage.style.cssText = `
+  //                 display: block;
+  //                 margin: 0 auto;
+  //             `;
+  //             // form.append(statusMassage); // Метод Element.append() вставляет узлы или строки с текстом в конец Element.
+  //             form.insertAdjacentElement('afterend', statusMassage) // добавляет переданный элемент в DOM-дерево относительно элемента, вызвавшего метод.
+  //             const request = new XMLHttpRequest();
+  //             request.open('POST', 'server.php');
+  //             request.setRequestHeader('Contante-type', 'application/json'); // заголовки
+  //             const formData = new FormData(form); // передача данных из HTML формы в FormData объект
+  //             const object = {};
+  //             formData.forEach(function(value,key) {
+  //                 object[key] = value;
+  //             })
+  //             const json = JSON.stringify(object);
+  //             request.send(json); // Отправляем данные на сервер 
+  //             // request.send(formData); // Отправляем данные на сервер 
+  //             request.addEventListener('load', () => { // отслеживаем загрузку формы
+  //                 if (request.status === 200) { // 200 OK («хорошо») (Список кодов состояния HTTP)
+  //                     console.log(request.response);
+  //                     showThanksModal(message.success);
+  //                     statusMassage.textContent = message.success;
+  //                     form.reset(); // сбрасываем форму после отправки.
+  //                        statusMassage.remove() 
+  //                 } else {
+  //                     showThanksModal(message.failure);
+  //                 }
+  //             })
+  //         })
+  //     }
+  // _____________________________________________________________________________________________________________________________
+  // ОПОВЕЩЕНИЕ ПОЛЬЗОВАТЕЛЯ СО СПИНЕРОМ
   // 1) Скрываем старые инпуты в форме
   // 1) Создаем новый блок благодарности и пушим на страницу
   // 1) возвращаем форму в изначальный вид
-  // 1) 
+  // 1) назначаем картинку вместо текста, задаем инлайн стили, помещаем куда нужно 3
 
 
   function showThanksModal(massage) {
@@ -384,6 +435,8 @@ window.addEventListener('DOMContentLoaded', () => {
       closeModal();
     }, 4000);
   }
+
+  fetch('db.json').then(data => data.json()).then(res => console.log(res));
 });
 
 /***/ })
