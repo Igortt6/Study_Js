@@ -44,7 +44,7 @@ window.addEventListener('DOMContentLoaded', () =>{
 // 1 установить дату 
 // 2 опеределить разницу между дедлайном
 // 3 обновление таймера каждую минуту 
-    const deadline = '2022-07-10'; // установка конечной даты
+    const deadline = '2022-08-20'; // установка конечной даты
 
     // расчет даты в мс
     function getTimeRemaining(endtime) {
@@ -117,17 +117,19 @@ window.addEventListener('DOMContentLoaded', () =>{
     const modalTrigger = document.querySelectorAll('[data-modal]'),
           modal = document.querySelector('.modal');
 
+    modalTrigger.forEach(btn => {
+    btn.addEventListener('click', openModal);
+    });
+
+    // Функция открытия модал
     function openModal() {
         modal.classList.add('show');
         modal.classList.remove('hide');
         document.body.style.overflow = 'hidden'
         clearInterval(modalTimerId); // не вызывать модал если уже открывалось вручную
     }
-    
-    modalTrigger.forEach(btn => {
-        btn.addEventListener('click', openModal);
-    });
 
+    // Функция закрытия модал
     function closeModal () {
         modal.classList.add('hide');
         modal.classList.remove('show');
@@ -136,8 +138,9 @@ window.addEventListener('DOMContentLoaded', () =>{
 
     // закрытие модалки при клике на подложку
     modal.addEventListener('click', (e) => {
-        if (e.target === modal || e.target.getAttribute('data-close' == '')) {
+        if (e.target === modal || e.target.getAttribute('data-close') == "" ) {
             closeModal();
+            console.log(e.target);
         }
     })
     
@@ -145,6 +148,7 @@ window.addEventListener('DOMContentLoaded', () =>{
     document.addEventListener ('keydown', (e) => {
         if (e.code === "Escape" && modal.classList.contains('show')) {
             closeModal();
+            console.log(e.code);
         }
     });
 
@@ -243,11 +247,24 @@ window.addEventListener('DOMContentLoaded', () =>{
 
     }
 
-    forms.forEach(item => { // назначаем функцию postData на все формы странички. 
-        postData(item);
+    // назначаем функцию postData на все формы странички.
+    forms.forEach(item => {  
+        bindPostData(item);
     })
 
-    function postData(form) {
+    const postData = async (url, data) => {
+        const res = await fetch(url, {
+            metod: "POST",
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: data
+        });
+        
+        return await res.json();
+    }
+
+    function bindPostData(form) {
         form.addEventListener('submit', (e) => {  //    'submit' - событие отправки формы
             e.preventDefault(); //                      отмена поведения браузера
 
@@ -268,15 +285,7 @@ window.addEventListener('DOMContentLoaded', () =>{
                 object[key] = value;
             })
 
-            fetch('server.php', {
-                metod: "POST",
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                // body: formData // для Форм дата 
-                body: JSON.stringify(object) // для JSON
-            })
-            .then(data => data.text())
+            postData('http://localhost:3000/requests', JSON.stringify(object))
             .then(data =>{
                 console.log(data);
                 showThanksModal(message.success);

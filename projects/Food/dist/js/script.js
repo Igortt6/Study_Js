@@ -142,7 +142,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // 2 опеределить разницу между дедлайном
   // 3 обновление таймера каждую минуту 
 
-  const deadline = '2022-07-10'; // установка конечной даты
+  const deadline = '2022-08-20'; // установка конечной даты
   // расчет даты в мс
 
   function getTimeRemaining(endtime) {
@@ -211,17 +211,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const modalTrigger = document.querySelectorAll('[data-modal]'),
         modal = document.querySelector('.modal');
+  modalTrigger.forEach(btn => {
+    btn.addEventListener('click', openModal);
+  }); // Функция открытия модал
 
   function openModal() {
     modal.classList.add('show');
     modal.classList.remove('hide');
     document.body.style.overflow = 'hidden';
     clearInterval(modalTimerId); // не вызывать модал если уже открывалось вручную
-  }
+  } // Функция закрытия модал
 
-  modalTrigger.forEach(btn => {
-    btn.addEventListener('click', openModal);
-  });
 
   function closeModal() {
     modal.classList.add('hide');
@@ -231,14 +231,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
   modal.addEventListener('click', e => {
-    if (e.target === modal || e.target.getAttribute('data-close' == '')) {
+    if (e.target === modal || e.target.getAttribute('data-close') == "") {
       closeModal();
+      console.log(e.target);
     }
   }); // закрытие модалки при клике на клавишу Еск
 
   document.addEventListener('keydown', e => {
     if (e.code === "Escape" && modal.classList.contains('show')) {
       closeModal();
+      console.log(e.code);
     }
   });
   const modalTimerId = setTimeout(openModal, 5000); // открывать модал через N секунд
@@ -312,13 +314,24 @@ window.addEventListener('DOMContentLoaded', () => {
     loading: 'img/spinner.svg',
     success: 'Спасибо! Скоро мы с вами свяжемся',
     failure: 'Что-то пошло не так...'
-  };
+  }; // назначаем функцию postData на все формы странички.
+
   forms.forEach(item => {
-    // назначаем функцию postData на все формы странички. 
-    postData(item);
+    bindPostData(item);
   });
 
-  function postData(form) {
+  const postData = async (url, data) => {
+    const res = await fetch(url, {
+      metod: "POST",
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: data
+    });
+    return await res.json();
+  };
+
+  function bindPostData(form) {
     form.addEventListener('submit', e => {
       //    'submit' - событие отправки формы
       e.preventDefault(); //                      отмена поведения браузера
@@ -339,15 +352,7 @@ window.addEventListener('DOMContentLoaded', () => {
       formData.forEach(function (value, key) {
         object[key] = value;
       });
-      fetch('server.php', {
-        metod: "POST",
-        headers: {
-          'Content-type': 'application/json'
-        },
-        // body: formData // для Форм дата 
-        body: JSON.stringify(object) // для JSON
-
-      }).then(data => data.text()).then(data => {
+      postData('http://localhost:3000/requests', JSON.stringify(object)).then(data => {
         console.log(data);
         showThanksModal(message.success);
         statusMassage.textContent = message.success;
@@ -436,7 +441,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }, 4000);
   }
 
-  fetch('db.json').then(data => data.json()).then(res => console.log(res));
+  fetch('http://localhost:3000/menu').then(data => data.json()).then(res => console.log(res));
 });
 
 /***/ })
