@@ -318,16 +318,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
   forms.forEach(item => {
     bindPostData(item);
-  });
+  }); //функция отправки данных АСИНХРОННАЯ 
 
   const postData = async (url, data) => {
     const res = await fetch(url, {
-      metod: "POST",
+      method: "POST",
       headers: {
         'Content-type': 'application/json'
       },
       body: data
-    });
+    }); // Возвращаем ПРОМИС в формате .json
+
     return await res.json();
   };
 
