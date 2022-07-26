@@ -388,56 +388,141 @@ window.addEventListener('DOMContentLoaded', () =>{
         .then(data => data.json())
         .then(res => console.log(res));
 // _____________________________________________________________________________________________________________________________
-// Слайдер
-// Выбрать все елементы с которыми будет работать
-// Определяем индекс  слайда
-// Функция показа слайда и скрытия остальных (с условием, работы стрелок по кругу)
-// Обрабатываем клики на стрелочки 
-// создаем нумерацию общего количества слайдов 
+// // Слайдер 1 версия
+// // Выбрать все елементы с которыми будет работать
+// // Определяем индекс  слайда
+// // Функция показа слайда и скрытия остальных (с условием, работы стрелок по кругу)
+// // Обрабатываем клики на стрелочки 
+// // создаем нумерацию общего количества слайдов 
+//     const slides = document.querySelectorAll('.offer__slide'),
+//             prevSlide = document.querySelector('.offer__slider-prev'),
+//             nextSlide = document.querySelector('.offer__slider-next'),
+//             currentSlide = document.querySelector('#current'),
+//             totalSlide = document.querySelector('#total');
+//     let slideIndex = 1;
+
+//     showSlides(slideIndex);
+
+    // if (slides.length < 10) { 
+    //     totalSlide.textContent = `0${slides.length}`;
+    // } else {
+    //     totalSlide.textContent = slides.length;
+    // }
+
+//     function showSlides(n) {
+//         if (n > slides.length) {
+//             slideIndex = 1;
+//         }
+
+//         if (n < 1) {
+//             slideIndex = slides.length;
+//         }
+        
+//         slides.forEach(item => item.style.display = 'none');
+
+//         slides[slideIndex - 1].style.display = 'block';
+
+//         if (slides.length < 10) { 
+//             currentSlide.textContent = `0${slideIndex}`;
+//         } else {
+//             currentSlide.textContent = slideIndex;
+//         }
+//     }
+
+//     function plusSlides(n) {
+//         showSlides(slideIndex += n);
+//     }
+
+//     prevSlide.addEventListener('click', () => {
+//         plusSlides(-1);
+//     });
+
+//     nextSlide.addEventListener('click', () => {
+//         plusSlides(1);
+//     });
+
+
+// Слайдер 2 версия
+// Устанавливаем ширину slidesField в 400% (на 4 слайда)
+// задаем всем слайдам одинаковую ширину
+// выстраиваем все слайды в 1 линию slidesField + анимация
+// скрываем все слайды вне зоны видипости slidesWrapper
+// Обработчик события для передвигания слайдера
+// 
+// 
     const slides = document.querySelectorAll('.offer__slide'),
             prevSlide = document.querySelector('.offer__slider-prev'),
             nextSlide = document.querySelector('.offer__slider-next'),
             currentSlide = document.querySelector('#current'),
-            totalSlide = document.querySelector('#total');
+            totalSlide = document.querySelector('#total'),
+            slidesWrapper = document.querySelector('.offer__slider-wrapper'),
+            slidesField =  document.querySelector('.offer__slide-inner'),
+            width = window.getComputedStyle(slidesWrapper).width; // получаем ширину слайда заданого в CSS
     let slideIndex = 1;
-
-    showSlides(slideIndex);
+    let offset = 0;
 
     if (slides.length < 10) { 
         totalSlide.textContent = `0${slides.length}`;
+        currentSlide.textContent = `0${slideIndex}`;
     } else {
         totalSlide.textContent = slides.length;
+        currentSlide.textContent = slideIndex;
+
     }
 
-    function showSlides(n) {
-        if (n > slides.length) {
-            slideIndex = 1;
+    slidesField.style.width = 100 * slides.length + '%'; // width 400% 
+    slidesField.style.display = 'flex';
+    slidesField.style.transition = "0.5s all";
+
+    slidesWrapper.style.overflow = 'hidden';
+
+    slides.forEach(slide => { // 1 slide = width 100% 
+        slide.style.width = width;
+    });
+
+    // offset = ширина 1 слайда * количество слайдов-1
+    nextSlide.addEventListener('click', () => {
+        if (offset == +width.slice(0, width.length - 2) * (slides.length - 1)){ // 650 * 4-1
+            offset = 0;
+        } else {
+            offset += +width.slice(0, width.length - 2);
         }
 
-        if (n < 1) {
-            slideIndex = slides.length;
-        }
+        slidesField.style.transform = `translateX(-${offset}px)`;
         
-        slides.forEach(item => item.style.display = 'none');
+        if (slideIndex == slides.length) {
+            slideIndex = 1;
+        } else {
+            slideIndex++;
+        }
 
-        slides[slideIndex - 1].style.display = 'block';
-
-        if (slides.length < 10) { 
+        if (slides.length < 10) {
             currentSlide.textContent = `0${slideIndex}`;
         } else {
             currentSlide.textContent = slideIndex;
         }
-    }
 
-    function plusSlides(n) {
-        showSlides(slideIndex += n);
-    }
-
-    prevSlide.addEventListener('click', () => {
-        plusSlides(-1);
     });
 
-    nextSlide.addEventListener('click', () => {
-        plusSlides(1);
+    prevSlide.addEventListener('click', () => {
+        if (offset == 0){
+            offset = +width.slice(0, width.length - 2) * (slides.length - 1)
+        } else {
+            offset -= +width.slice(0, width.length - 2);
+        }
+
+        slidesField.style.transform = `translateX(-${offset}px)`;
+
+        if (slideIndex == 1) {
+            slideIndex = slides.length;
+        } else {
+            slideIndex--;
+        }
+
+        if (slides.length < 10) {
+            currentSlide.textContent = `0${slideIndex}`;
+        } else {
+            currentSlide.textContent = slideIndex;
+        }
     });
 });
