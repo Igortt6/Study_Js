@@ -2820,7 +2820,57 @@ window.addEventListener('DOMContentLoaded', () => {
     }, 4000);
   }
 
-  fetch('http://localhost:3000/menu').then(data => data.json()).then(res => console.log(res));
+  fetch('http://localhost:3000/menu').then(data => data.json()).then(res => console.log(res)); // _____________________________________________________________________________________________________________________________
+  // Слайдер
+  // Выбрать все елементы с которыми будет работать
+  // Определяем индекс  слайда
+  // Функция показа слайда и скрытия остальных (с условием, работы стрелок по кругу)
+  // Обрабатываем клики на стрелочки 
+  // создаем нумерацию общего количества слайдов 
+
+  const slides = document.querySelectorAll('.offer__slide'),
+        prevSlide = document.querySelector('.offer__slider-prev'),
+        nextSlide = document.querySelector('.offer__slider-next'),
+        currentSlide = document.querySelector('#current'),
+        totalSlide = document.querySelector('#total');
+  let slideIndex = 1;
+  showSlides(slideIndex);
+
+  if (slides.length < 10) {
+    totalSlide.textContent = `0${slides.length}`;
+  } else {
+    totalSlide.textContent = slides.length;
+  }
+
+  function showSlides(n) {
+    if (n > slides.length) {
+      slideIndex = 1;
+    }
+
+    if (n < 1) {
+      slideIndex = slides.length;
+    }
+
+    slides.forEach(item => item.style.display = 'none');
+    slides[slideIndex - 1].style.display = 'block';
+
+    if (slides.length < 10) {
+      currentSlide.textContent = `0${slideIndex}`;
+    } else {
+      currentSlide.textContent = slideIndex;
+    }
+  }
+
+  function plusSlides(n) {
+    showSlides(slideIndex += n);
+  }
+
+  prevSlide.addEventListener('click', () => {
+    plusSlides(-1);
+  });
+  nextSlide.addEventListener('click', () => {
+    plusSlides(1);
+  });
 });
 
 /***/ })
