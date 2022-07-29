@@ -638,10 +638,9 @@ window.addEventListener('DOMContentLoaded', () =>{
     getStaticInformation('#gender', 'calculating__choose-item_active'); // для 1 строки
     getStaticInformation('.calculating__choose_big', 'calculating__choose-item_active'); // для 3 строки
 
-    function getDinamicInformation(selector) {
+    function getDynamicInformation(selector) {
         const input = document.querySelector(selector);
 
-        calcTotal();
 
         input.addEventListener('input', () => {
             switch(input.getAttribute('id')) {
@@ -654,7 +653,12 @@ window.addEventListener('DOMContentLoaded', () =>{
                 case 'age':
                     age = +input.value;
                     break;
-            }   
+            }  
+            calcTotal();
+
         });
     }
+    getDynamicInformation('#height');
+    getDynamicInformation('#weight');
+    getDynamicInformation('#age');
 });
