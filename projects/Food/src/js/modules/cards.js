@@ -1,3 +1,4 @@
+import {getResource} from "../services/services";
 function cards() {
 // Используем классы для карточек
     class MenuCard {
@@ -40,17 +41,6 @@ function cards() {
         }
     }
 
-    //Функция GET для формирования карточек автоматически
-    const getResource = async (url) => {
-        const res = await fetch(url);
-        // Добавляем проверку и сообщение об ошибке  промиса res
-        if (!res.ok) {
-            throw new Error (`Cuold not fetch ${url} status:${res.status}`)
-        }
-        // Возвращаем ПРОМИС в формате .json
-        return await res.json();
-    }
-    
     getResource('http://localhost:3000/menu')        
         .then(data => {
             data.forEach(({img, altimg, title, descr, price}) => {

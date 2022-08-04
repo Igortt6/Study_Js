@@ -1,13 +1,3 @@
-// Функция открытия модал
-function openModal(modalSelector) {
-    const modal = document.querySelector(modalSelector);
-
-    modal.classList.add('show');
-    modal.classList.remove('hide');
-    document.body.style.overflow = 'hidden'
-    clearInterval(modalTimerId); // не вызывать модал если уже открывалось вручную
-}
-
 // Функция закрытия модал
 function closeModal (modalSelector) {
     const modal = document.querySelector(modalSelector);
@@ -17,7 +7,22 @@ function closeModal (modalSelector) {
     document.body.style.overflow = ''
 }
 
-function modal(triggerSelector, modalSelector) {
+// Функция открытия модал
+function openModal(modalSelector, modalTimerId) {
+    const modal = document.querySelector(modalSelector);
+
+    modal.classList.add('show');
+    modal.classList.remove('hide');
+    document.body.style.overflow = 'hidden'
+
+    console.log(modalTimerId);
+    if (modalTimerId) {
+        clearInterval(modalTimerId); // не вызывать модал если уже открывалось вручную
+    }
+}
+
+
+function modal(triggerSelector, modalSelector, modalTimerId) {
 // MODAL
 // 1 функция открытия окна 
 // 2 функция закрытия окна
@@ -27,7 +32,7 @@ function modal(triggerSelector, modalSelector) {
           modal = document.querySelector(modalSelector);
 
     modalTrigger.forEach(btn => {
-    btn.addEventListener('click', () => openModal(modalSelector));
+    btn.addEventListener('click', () => openModal(modalSelector, modalTimerId));
     });
 
 
@@ -35,7 +40,6 @@ function modal(triggerSelector, modalSelector) {
     modal.addEventListener('click', (e) => {
         if (e.target === modal || e.target.getAttribute('data-close') == "" ) {
             closeModal(modalSelector);
-            console.log(e.target);
         }
     })
     
@@ -43,15 +47,12 @@ function modal(triggerSelector, modalSelector) {
     document.addEventListener ('keydown', (e) => {
         if (e.code === "Escape" && modal.classList.contains('show')) {
             closeModal(modalSelector);
-            console.log(e.code);
         }
     });
 
-    const modalTimerId = setTimeout(openModal, 50000); // открывать модал через N секунд
-
     function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight -1) {
-            openModal(modalSelector);
+            openModal(modalSelector, modalTimerId);
             window.removeEventListener('scroll', showModalByScroll) // удаляем вызов модалки в низу страници после 1 раза
         }
     }
@@ -65,31 +66,7 @@ function modal(triggerSelector, modalSelector) {
     // 1) возвращаем форму в изначальный вид
     // 1) назначаем картинку вместо текста, задаем инлайн стили, помещаем куда нужно 3
     
-    function showThanksModal(massage) {
-        const prevModalDialog = document.querySelector('.modal__dialog')
-
-        prevModalDialog.classList.add('hide');
-        openModal();
-
-        const  thanksModal = document.createElement('div');
-        thanksModal.classList.add('modal__dialog');
-        thanksModal.innerHTML = `
-        <div class="modal__content">
-            <div class="modal__close" data-close>×</div>
-            <div class="modal__title">${massage}</div>
-        </div>
-        `;
-
-        document.querySelector('.modal').append(thanksModal);
-
-        // возвращаем форму в изначальный вид
-        setTimeout(() => {
-            thanksModal.remove()
-            prevModalDialog.classList.add('show');
-            prevModalDialog.classList.remove('hide');
-            closeModal();
-        }, 4000);
-    }
+    
 
     fetch('http://localhost:3000/menu')
         .then(data => data.json())

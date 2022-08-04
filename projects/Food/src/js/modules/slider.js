@@ -1,4 +1,4 @@
-function slider (){
+function slider ({container, slide, nextArrow, prevArrow, totalCounter, currentCounter, wrapper, field}){
 // // Слайдер 1 версия
 // // Выбрать все елементы с которыми будет работать
 // // Определяем индекс  слайда
@@ -61,14 +61,14 @@ function slider (){
 // Обработчик события для передвигания слайдера
 // 
 // 
-    const   slides = document.querySelectorAll('.offer__slide'), 
-            slider = document.querySelector('.offer__slider'),
-            prevSlide = document.querySelector('.offer__slider-prev'),
-            nextSlide = document.querySelector('.offer__slider-next'),
-            currentSlide = document.querySelector('#current'),
-            totalSlide = document.querySelector('#total'),
-            slidesWrapper = document.querySelector('.offer__slider-wrapper'),
-            slidesField =  document.querySelector('.offer__slide-inner'),
+    const   slides = document.querySelectorAll(slide), 
+            slider = document.querySelector(container),
+            prevSlide = document.querySelector(prevArrow),
+            nextSlide = document.querySelector(nextArrow),
+            currentSlide = document.querySelector(currentCounter),
+            totalSlide = document.querySelector(totalCounter),
+            slidesWrapper = document.querySelector(wrapper),
+            slidesField =  document.querySelector(field),
             width = window.getComputedStyle(slidesWrapper).width; // получаем ширину слайда заданого в CSS
     let slideIndex = 1; // Номер слайда
     let offset = 0; // Индикатор смещения слайдов 

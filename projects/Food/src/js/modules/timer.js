@@ -1,9 +1,8 @@
-function timer() {
+function timer(id, deadline) {
     // TIMER
     // 1 установить дату 
     // 2 опеределить разницу между дедлайном
     // 3 обновление таймера каждую минуту 
-    const deadline = '2022-08-20'; // установка конечной даты
 
     // расчет даты в мс
     function getTimeRemaining(endtime) {
@@ -66,6 +65,6 @@ function timer() {
             }
         }
     }
-    setClock('.timer', deadline);
+    setClock(id, deadline);
 }
 export default timer;

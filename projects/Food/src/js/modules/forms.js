@@ -1,43 +1,31 @@
-import {closeModal, openModal} from './modal'
+import {closeModal, openModal} from './modal';
+import {postData} from '../services/services';
 
-function forms() {
+function forms(formSelector, modalTimerId) {
 // FORMS (с форматом FormData и json)
 // 1) создаем блок с сообщениями с ошибками
 // 2) собираем все данные с форм в formData
 // 3) отправляем данные с помощью fetch
 
-    const forms = document.querySelectorAll('form');
+    const forms = document.querySelectorAll(formSelector);
 
     const message = {
         loading: 'img/spinner.svg',
         success: 'Спасибо! Скоро мы с вами свяжемся',
         failure: 'Что-то пошло не так...',
 
-    }
+    };
 
     // назначаем функцию postData на все формы странички.
     forms.forEach(item => {  
         bindPostData(item);
-    })
-
-    //функция отправки данных АСИНХРОННАЯ 
-    const postData = async (url, data) => {
-        const res = await fetch(url, {
-            method: "POST",
-            headers: {
-                'Content-type': 'application/json'
-            },
-            body: data
-        });
-        // Возвращаем ПРОМИС в формате .json
-        return await res.json();
-    }
+    });
 
     function bindPostData(form) {
         form.addEventListener('submit', (e) => {  //    'submit' - событие отправки формы
             e.preventDefault(); //                      отмена поведения браузера
 
-            const statusMassage = document.createElement('div') // Новый елемент с выводом сообщения о статусе загрузки 
+            let statusMassage = document.createElement('div') // Новый елемент с выводом сообщения о статусе загрузки 
             statusMassage.src = message.loading;
             statusMassage.style.cssText = `
                 display: block;
@@ -57,16 +45,39 @@ function forms() {
                 showThanksModal(message.success);
                 statusMassage.textContent = message.success;
                 statusMassage.remove();
-            })
-            .catch(() => {
+            }).catch(() => {
                 showThanksModal(message.failure);
-            })
-            .finally(() => {
+            }).finally(() => {
                 form.reset();
-            })
-        })
+            });
+        });
     }
 
+    function showThanksModal(massage) {
+        const prevModalDialog = document.querySelector('.modal__dialog')
+
+        prevModalDialog.classList.add('hide');
+        openModal('.modal', modalTimerId);
+
+        const  thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+        thanksModal.innerHTML = `
+        <div class="modal__content">
+            <div class="modal__close" data-close>×</div>
+            <div class="modal__title">${massage}</div>
+        </div>
+        `;
+
+        document.querySelector('.modal').append(thanksModal);
+
+        // возвращаем форму в изначальный вид
+        setTimeout(() => {
+            thanksModal.remove()
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            closeModal('.modal');
+        }, 4000);
+    }
 // // 1 Выделяем формы 
 // // 2 Создаем обарботчик событий, при отправке формы. Отменяем поведения браузера.
 // // 3 Создаем API -  XMLHttpRequest
