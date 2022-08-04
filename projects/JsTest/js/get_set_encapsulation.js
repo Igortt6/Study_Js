@@ -55,29 +55,26 @@ jhon.say();
 //                                                 Использование get/set в Классах
 
 class  UserClass {
-    constructor (name, age, age2) {
+    constructor (name, age, _age) {
         this.name = name;
         this.age = age;
-        this.userAge = age2;
+        this._age = _age;
     }   
     say() {
-        console.log(`Имя пользователя ${this.name}, возраст ${this.age}  возраст ${this.userAge}`);
+        console.log(`Имя пользователя ${this.name}, возраст ${this.age}  возраст ${this._age}`);
     }
 
-    getAge2() {
-        return this.userAge;
+    get getSet() {                                                    // создаем GETter
+        return this._age;
     }
 
-    setAge2(age2) {
-        this.userAge = age2;
+    set getSet(_age) {                                                 // создаем SETter
+        this._age = _age;
     }
 }
 
-const jhonClass = new User('Jhon Snow', 20, 30);                     // создаем новый объект jhon
-console.log(jhonClass.name);                                     // получаем свойство name
-console.log(jhonClass.age = 26);                                 // Изменяем свойство age
-console.log(jhonClass.userAge);                                  // undefined || нельзя менять напрямую
-console.log(jhonClass.getAge2());                                // используем фун. Get для доступа
-jhonClass.setAge2(40);                                           // используем фун. Set для изменения
-
-jhonClass.say();
+const jhon_2 = new UserClass('Jhon Snow', 20, 30);                  // создаем новый объект jhon
+console.log(jhon_2.name);                                           // получаем свойство name
+console.log(jhon_2.getSet);                                         // используем GETter
+jhon_2.getSet = 99;                                                 // используем SETter
+jhon_2.say();
